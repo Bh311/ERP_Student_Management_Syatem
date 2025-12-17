@@ -17,7 +17,8 @@ export default function Ana() {
   // -------------------------
   const [pendingAdmissions, setPendingAdmissions] = useState(0);
   const [feesCollected, setFeesCollected] = useState(0);
-  const [hostelOccupancy, setHostelOccupancy] = useState(0); // ⭐ NEW STATE
+  const [hostelOccupancy, setHostelOccupancy] = useState(0);
+  const [unpaidStudents, setUnpaidStudents] = useState(0); // ⭐ NEW
 
   const [admissionStats, setAdmissionStats] = useState({
     applied: 0,
@@ -25,6 +26,9 @@ export default function Ana() {
     enrolled: 0,
     rejected: 0
   });
+
+  // ⭐ Fee Histogram State
+  const [feeHistogramData, setFeeHistogramData] = useState([]);
 
   // -------------------------
   // FETCH COMBINED Dashboard Stats
@@ -39,6 +43,7 @@ export default function Ana() {
 
       setPendingAdmissions(data.pendingReview);
       setFeesCollected(data.totalCollected);
+      setUnpaidStudents(data.unpaidStudents); // ⭐ ADDED
 
     } catch (error) {
       console.log("Error fetching dashboard stats", error);
@@ -54,8 +59,7 @@ export default function Ana() {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
-      const percent = res.data.data.currentOccupancyPercent;
-      setHostelOccupancy(percent);
+      setHostelOccupancy(res.data.data.currentOccupancyPercent);
 
     } catch (error) {
       console.log("Error fetching hostel stats", error);
@@ -86,25 +90,57 @@ export default function Ana() {
   };
 
   // -------------------------
+  // FETCH FEES HISTOGRAM DATA
+  // -------------------------
+  const fetchFeeHistogram = async () => {
+    try {
+      const res = await axios.get("/api/admin/fees/accounts", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+
+      const records = res.data.data;
+      const courseMap = {};
+
+      records.forEach(item => {
+        const course = item.student?.academics?.course || "Unknown";
+
+        if (!courseMap[course]) {
+          courseMap[course] = { paid: 0, unpaid: 0 };
+        }
+
+        if (item.balance === 0 || item.status === "Paid") {
+          courseMap[course].paid += 1;
+        } else {
+          courseMap[course].unpaid += 1;
+        }
+      });
+
+      const graphData = Object.keys(courseMap).map(course => ({
+        name: course,
+        Paid: courseMap[course].paid,
+        Unpaid: courseMap[course].unpaid
+      }));
+
+      setFeeHistogramData(graphData);
+
+    } catch (error) {
+      console.log("Error fetching fee histogram", error);
+    }
+  };
+
+  // -------------------------
   // USE EFFECT
   // -------------------------
   useEffect(() => {
     fetchDashboardData();
     fetchAdmissionStats();
-    fetchHostelStats(); // ⭐ DIRECT HOSTEL API CALL
+    fetchHostelStats();
+    fetchFeeHistogram();
   }, []);
 
   // -------------------------
   // GRAPH DATA
   // -------------------------
-  const monthlyFeeData = [
-    { name: 'Jan', value: 850000 },
-    { name: 'Feb', value: 950000 },
-    { name: 'Mar', value: 1050000 },
-    { name: 'Apr', value: 1100000 },
-    { name: 'May', value: 1200000 },
-  ];
-
   const admissionStatusData = [
     { name: 'Applied', value: admissionStats.applied, color: '#3B82F6' },
     { name: 'Verified', value: admissionStats.verified, color: '#22C55E' },
@@ -145,7 +181,6 @@ export default function Ana() {
           statusColor="text-green-600"
         />
 
-        {/* ⭐ HOSTEL OCCUPANCY LIVE */}
         <Hero
           title="Hostel Occupancy"
           value={`${hostelOccupancy}%`}
@@ -154,20 +189,31 @@ export default function Ana() {
           color="bg-orange-100"
         />
 
+        {/* ⭐ UNPAID STUDENTS */}
         <Hero
-          title="Exam Uploads"
-          value="42"
-          status="3 pending review"
-          icon={<FileText size={20} className="text-purple-600" />}
-          color="bg-purple-100"
-          statusColor="text-blue-500"
+          title="Unpaid Students"
+          value={unpaidStudents}
+          status="Fee pending"
+          icon={<FileText size={20} className="text-blue-600" />}
+          color="bg-blue-100"
+          statusColor="text-red-500"
         />
       </div>
 
       {/* GRAPHS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Graph data={monthlyFeeData} type="line" title="Monthly Fee Collection" />
-        <Graph data={admissionStatusData} type="pie" title="Admission Status Distribution" />
+
+        <Graph
+          data={feeHistogramData}
+          type="bar"
+          title="Course-wise Paid vs Unpaid Students"
+        />
+
+        <Graph
+          data={admissionStatusData}
+          type="pie"
+          title="Admission Status Distribution"
+        />
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ const studentMenuItems = [
   { id: 'registration', label: 'Registration', icon: UserPlus },
   { id: 'fees', label: 'Fees', icon: CreditCard },
   { id: 'hostel', label: 'Hostel', icon: Hotel },
-  { id: "exam", label: "Exam", icon: FileUp }, // New menu item
+  // { id: "exam", label: "Exam", icon: FileUp }, // New menu item
 ];
 
 export default function StudentDash() {
@@ -40,8 +40,8 @@ export default function StudentDash() {
         return <FeesContent />;
       case 'hostel':
         return <HostelContent />;
-      case 'exam':
-        return <ExamContent />;
+      // case 'exam':
+      //   return <ExamContent />;
       default:
         return <DashboardContent />;
     }

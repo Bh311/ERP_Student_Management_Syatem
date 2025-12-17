@@ -165,7 +165,6 @@ export default function ManageFees() {
   
    {/* Fee Structures (Course Fees) */}
 <div className="mt-10">
-  <h2 className="text-xl font-bold text-gray-800 mb-4">Academic Fee Structures</h2>
   <FeeStructure />
 </div>
 

@@ -5,7 +5,7 @@ import Header from "../../components/CommonComponent/DashHead";
 import Sidebar from "../../components/CommonComponent/DashBar";
 import Analytics from "../Admin/Analytics";
 import VerifyAdmissions from "../Admin/VerifyStud";
-import CreateFeeStructure from "../../components/AdminComponent/CreateFeeStrucutre"
+import CreateFeeStructure from "../../components/AdminComponent/CreateFeeStrucutre";
 import ManageFees from "../Admin/FeeManage";
 import HostelManagement from "../Admin/HostelManage";
 import ExamUploads from "../Admin/ExamUploads";
@@ -15,7 +15,7 @@ const adminMenuItems = [
     { id: "verify-admissions", label: "Verify Admissions", icon: UserPlus },
     { id: "manage-fees", label: "Manage Fees", icon: CreditCard },
     { id: "hostel-management", label: "Hostel Management", icon: Hotel },
-    { id: "exam-uploads", label: "Exam Uploads", icon: FileUp },
+    // { id: "exam-uploads", label: "Exam Uploads", icon: FileUp },
 ];
 
 export default function AdminDash() {
@@ -47,8 +47,8 @@ export default function AdminDash() {
                 return <CreateFeeStructure />; // <-- Renders the new form
             case "hostel-management":
                 return <HostelManagement />;
-            case "exam-uploads":
-                return <ExamUploads />;
+            // case "exam-uploads":
+            //     return <ExamUploads />;
             default:
                 return <Analytics />;
         }

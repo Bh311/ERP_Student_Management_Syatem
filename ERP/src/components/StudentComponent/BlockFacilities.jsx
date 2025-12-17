@@ -10,7 +10,7 @@ export default function BlockFacilities() {
     const contactInfo = {
         warden: '+91 98765 43210',
         email: 'hostel.blocka@university.edu',
-        emergency: 'Security Office',
+        emergency: '(Security Office) : +91 7052473510',
     };
     const operatingHours = {
         entryExit: '6:00 AM - 11:00 PM',
@@ -20,7 +20,7 @@ export default function BlockFacilities() {
 
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Block A Facilities</h2>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Block Facilities</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Left Column: Facilities List */}
                 <div className="space-y-4">
@@ -52,7 +52,7 @@ export default function BlockFacilities() {
                             </div>
                             <div className="flex items-center space-x-2">
                                 <UserRound size={16} />
-                                <span>Emergency: {contactInfo.emergency}</span>
+                                <span>Emergency{contactInfo.emergency}</span>
                             </div>
                         </div>
                     </div>

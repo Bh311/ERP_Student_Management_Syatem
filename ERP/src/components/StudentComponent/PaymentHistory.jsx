@@ -11,7 +11,7 @@ export default function PaymentHistoryContent({ transactions = [] }) {
   }
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-sm">
+    <div className="p-6 m-3 bg-white rounded-xl shadow-sm">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Payment History</h2>
 
       <div className="space-y-4">

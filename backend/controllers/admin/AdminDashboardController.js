@@ -9,7 +9,7 @@ class AdminDashboardController {
       status: "Applied"
     });
 
-    // 2️⃣ Fees stats
+    // 2️⃣ Fees stats (Total Collected)
     const feeStats = await FeeAccount.aggregate([
       {
         $group: {
@@ -22,7 +22,12 @@ class AdminDashboardController {
     const totalCollected =
       feeStats.length > 0 ? feeStats[0].totalCollected : 0;
 
-    // 3️⃣ Hostel Occupancy Stats
+    // ⭐ 3️⃣ Students who have NOT paid fees
+    const unpaidStudents = await FeeAccount.countDocuments({
+      balance: { $gt: 0 }
+    });
+
+    // ⭐ 4️⃣ Hostel Occupancy Stats
     let hostelStats = {
       totalCapacity: 0,
       currentOccupancy: 0,
@@ -43,14 +48,15 @@ class AdminDashboardController {
       console.error("Hostel Stats Fetch Error:", err.message);
     }
 
-    // FINAL RESPONSE
+    // ✅ FINAL RESPONSE
     return res.status(200).json({
       success: true,
       message: "Combined stats fetched successfully",
       data: {
         pendingReview,
         totalCollected,
-        hostel: hostelStats // 🎯 ADDED HOSTEL OCCUPANCY HERE
+        unpaidStudents, // ⭐ ADDED
+        hostel: hostelStats
       }
     });
 
@@ -63,6 +69,7 @@ class AdminDashboardController {
     });
   }
 };
+
 
 }
 

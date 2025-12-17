@@ -17,7 +17,10 @@ export default function Header({ role, email }) {
         <img src={Logo} alt="Logo" className="h-10 w-10" />
         <div>
           <h1 className="text-lg font-semibold">Student Management System</h1>
-          <p className="text-xs text-gray-500">{role} Portal</p>
+        <p className="text-xs text-gray-500">
+  {role === 'admin' ? 'Admin Portal' : 'Student Portal'}
+</p>
+
         </div>
         <span className="ml-2 px-2 py-0.5 text-xs border border-green-500 text-green-600 rounded-full">
           {role === "admin" ? "Admin View" : "Student View"}
